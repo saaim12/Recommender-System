@@ -1,0 +1,15 @@
+
+PROJECT_NAME="recommender-system"
+ENVIRONMENT="dev"
+
+# Data sources
+DATABASE_URL="postgresql://user:password@host:5432/dbname"
+
+# Object storage for csv files of links,tags,ratings
+S3_BUCKET="your-bucket-name"
+AWS_ACCESS_KEY_ID="your-access-key"
+AWS_SECRET_ACCESS_KEY="your-secret-key"
+
+# Airflow
+AIRFLOW__CORE__FERNET_KEY="generate-with-airflow" 
+AIRFLOW__CORE__SQL_ALCHEMY_CONN="postgresql+psycopg2://airflow:airflow@localhost:5432/airflow"
