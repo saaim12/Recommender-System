@@ -1,14 +1,27 @@
-.venv/
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+
+# Environments
 .env
 .env.*
+venv/
+.envrc
+
+# Data artifacts
+/data/raw/
+/data/processed/
+/data/models/
+/artifacts/
+
+# Airflow
+/airflow/logs/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS/files
 .DS_Store
-.data/
-data/
-logs/
-mlruns/
-.airflow/
-airflow/airflow.db
-airflow/unittests.cfg
-.airflowenv
+Thumbs.db

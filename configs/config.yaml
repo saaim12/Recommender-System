@@ -1,15 +1,24 @@
-defaults:
-  app_env: local
-  data_dir: data
-  raw_dir: data/raw
-  processed_dir: data/processed
-  model_dir: data/models
-  artifact_dir: data/artifacts
-  tracking_uri: http://localhost:5000
-  evaluation:
-    holdout_size: 0.2
-    metrics: [rmse, mae]
-  training:
-    test_size: 0.2
-    random_state: 42
-    model_type: matrix_factorization
+project:
+  name: recommender-system
+  environment: dev
+
+paths:
+  raw_data: data/raw
+  processed_data: data/processed
+  models: data/models
+  artifacts: artifacts
+
+training:
+  test_size: 0.2
+  random_state: 42
+  epochs: 10
+  batch_size: 64
+  learning_rate: 0.001
+
+airflow:
+  dag_id: train_recommender
+  schedule: "0 2 * * *"  # daily at 2am
+  start_date: 2026-01-01
+
+tracking:
+  mlflow_tracking_uri: http://localhost:5000
