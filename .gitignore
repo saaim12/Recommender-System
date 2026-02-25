@@ -13,11 +13,19 @@ venv/
 .env.local
 .python-version
 
-# Data artifacts
-/data/raw/
-/data/processed/
-/data/models/
-/artifacts/
+# Ignore all CSV files
+*.csv
+
+# Keep folders in Git (so you can still store other artifacts)
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/models/.gitkeep
+!artifacts/.gitkeep
+
+# Raw data: ignore everything except EDA scripts and keepfile
+/data/raw/*
+!/data/raw/*.py
+!/data/raw/.gitkeep
 
 # Airflow
 /airflow/logs/
