@@ -1,0 +1,15 @@
+defaults:
+  app_env: local
+  data_dir: data
+  raw_dir: data/raw
+  processed_dir: data/processed
+  model_dir: data/models
+  artifact_dir: data/artifacts
+  tracking_uri: http://localhost:5000
+  evaluation:
+    holdout_size: 0.2
+    metrics: [rmse, mae]
+  training:
+    test_size: 0.2
+    random_state: 42
+    model_type: matrix_factorization
