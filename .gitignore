@@ -24,6 +24,7 @@ venv/
 
 # Raw data: ignore everything except EDA scripts and keepfile
 /data/raw/*
+!data/raw/*.md
 !/data/raw/*.py
 !/data/raw/.gitkeep
 
