@@ -1,11 +1,15 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
 
 from src.utils.config import resolve_project_path
+
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(slots=True)
@@ -19,15 +23,26 @@ class RawData:
 def _read_csv(path: Path, *, usecols: list[str] | None = None) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Missing data file: {path}")
-    return pd.read_csv(path, usecols=usecols)
+    logger.info("Reading file path=%s", path)
+    frame = pd.read_csv(path, usecols=usecols)
+    logger.info("Loaded file path=%s rows=%s cols=%s", path.name, len(frame), len(frame.columns))
+    return frame
 
 
 def load_raw_data(raw_data_dir: str | Path) -> RawData:
     base_dir = resolve_project_path(raw_data_dir)
+    logger.info("Loading raw data from base_dir=%s", base_dir)
     movies = _read_csv(base_dir / "movies.csv")
     ratings = _read_csv(base_dir / "ratings.csv")
     tags = _read_csv(base_dir / "tags.csv")
     links = _read_csv(base_dir / "links.csv")
+    logger.info(
+        "Raw data loaded movies=%s ratings=%s tags=%s links=%s",
+        len(movies),
+        len(ratings),
+        len(tags),
+        len(links),
+    )
     return RawData(movies=movies, ratings=ratings, tags=tags, links=links)
 
 
@@ -62,6 +77,13 @@ def aggregate_movie_tags(tags: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_catalog(raw_data: RawData) -> pd.DataFrame:
+    logger.info(
+        "Building catalog from movies=%s ratings=%s tags=%s links=%s",
+        len(raw_data.movies),
+        len(raw_data.ratings),
+        len(raw_data.tags),
+        len(raw_data.links),
+    )
     movies = raw_data.movies.copy()
     ratings_summary = aggregate_movie_ratings(raw_data.ratings)
     tags_summary = aggregate_movie_tags(raw_data.tags)
@@ -77,6 +99,13 @@ def build_catalog(raw_data: RawData) -> pd.DataFrame:
 
     catalog["genres"] = catalog["genres"].fillna("(no genres listed)")
     catalog["title"] = catalog["title"].fillna("")
+    logger.info(
+        "Catalog built rows=%s cols=%s rating_features=%s tag_features=%s",
+        len(catalog),
+        len(catalog.columns),
+        list(ratings_summary.columns),
+        list(tags_summary.columns),
+    )
     return catalog
 
 
@@ -89,6 +118,13 @@ def split_train_test_per_user(
     if ratings.empty:
         return ratings.copy(), ratings.copy()
 
+    logger.info(
+        "Splitting ratings per user rows=%s users=%s test_size=%s min_interactions=%s",
+        len(ratings),
+        ratings["userId"].nunique() if "userId" in ratings.columns else 0,
+        test_size,
+        min_interactions,
+    )
     train_parts: list[pd.DataFrame] = []
     test_parts: list[pd.DataFrame] = []
     sort_columns = [column for column in ["timestamp", "movieId"] if column in ratings.columns]
@@ -107,4 +143,11 @@ def split_train_test_per_user(
 
     train_frame = pd.concat(train_parts, ignore_index=True) if train_parts else ratings.iloc[0:0].copy()
     test_frame = pd.concat(test_parts, ignore_index=True) if test_parts else ratings.iloc[0:0].copy()
+    logger.info(
+        "Split complete train_rows=%s test_rows=%s train_users=%s test_users=%s",
+        len(train_frame),
+        len(test_frame),
+        train_frame["userId"].nunique() if not train_frame.empty else 0,
+        test_frame["userId"].nunique() if not test_frame.empty else 0,
+    )
     return train_frame, test_frame

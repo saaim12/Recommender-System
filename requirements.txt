@@ -23,9 +23,12 @@ uvicorn[standard]>=0.27,<1
 pyyaml>=6,<7
 python-dotenv>=1.0,<2
 pydantic>=2.6,<3
+pydantic-settings>=2.2,<3
 requests>=2.31,<3
+redis>=5,<6
 
 # Dev/test
 pytest>=8,<9
 black>=24,<26
 ruff>=0.3,<1
+

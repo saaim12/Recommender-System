@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: recommender-system-api
+    env: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ENV
+        value: prod
+      - key: API_PORT
+        value: 8000

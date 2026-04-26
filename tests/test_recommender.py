@@ -41,7 +41,7 @@ def test_catalog_builds_and_recommendations_exclude_history() -> None:
     assert not set(recommendations["movieId"]).intersection(watched)
     assert not recommendations.empty
 
-    evaluation = evaluate_holdout(model, holdout_ratings, k=2)
+    evaluation = evaluate_holdout(model, holdout_ratings, k=2, positive_threshold=1.0)
     assert evaluation.evaluated_users >= 1
 
 

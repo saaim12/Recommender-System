@@ -14,6 +14,9 @@ training:
   epochs: 10
   batch_size: 64
   learning_rate: 0.001
+  factorization_latent_dim: 16
+  factorization_epochs: 4
+  factorization_sample_rows: 250000
 
 airflow:
   dag_id: train_recommender
@@ -22,3 +25,18 @@ airflow:
 
 tracking:
   mlflow_tracking_uri: http://localhost:5000
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  top_n_default: 10
+  top_n_max: 100
+
+cache:
+  enabled: true
+  backend: memory # memory | redis
+  ttl_seconds: 300
+
+logging:
+  level: INFO
+  json: false
